@@ -264,24 +264,26 @@
       ========================================= */
    @media (max-width: 600px) {
        body {
-           padding: 0; /* Plus aucune marge autour */
+           padding: 0;
+           margin: 0;
            background-color: #dc0a2d; /* Fond rouge */
-           overflow: hidden; /* BLOQUE TOTALEMENT LE SCROLL DE L'ÉCRAN DU TÉLÉPHONE */
-           height: 100dvh; /* Utilise 100% de l'écran visible exact du téléphone */
-           display: flex; /* Garde le flex pour que la boîte rouge s'étire proprement */
-           flex-direction: column;
+           overflow: hidden; /* Empêche le défilement de touuute la page web */
        }
        .pokedex {
-           flex: 1; /* S'étire pour remplir tout l'écran */
-           width: 100vw;
-           max-width: none;
+           /* LA SOLUTION ULTIME : Fixe le Pokédex aux bords du téléphone ! */
+           position: fixed;
+           top: 0;
+           left: 0;
+           right: 0;
+           bottom: 0;
+           width: 100%;
+           height: 100%;
            border-radius: 0;
            border: none;
            padding: 10px;
            box-shadow: none;
-           display: flex;
-           flex-direction: column;
-           min-height: 0; /* TRÈS IMPORTANT: Empêche la boîte de grandir à l'infini */
+           display: flex; /* Active les boites flexibles */
+           flex-direction: column; /* Empile de haut en bas */
        }
        .contour-ecran {
            flex: 1; /* L'écran prend tout l'espace restant au milieu ! */
@@ -290,20 +292,38 @@
            border-radius: 10px;
            margin-bottom: 10px;
            padding: 10px;
-           min-height: 0; /* TRÈS IMPORTANT: Autorise les enfants à scroller en forçant la limite */
+           min-height: 0;
        }
        .ecran-interieur {
-           flex: 1; /* L'écran noir s'étire au maximum */
-           overflow-y: auto; /* AUTORISE LE SCROLL UNIQUEMENT ICI (SUR LA LISTE DE POKEMON) */
-           min-height: 0; /* Respecte les limites du parent flex */
+           flex: 1;
+           display: flex; /* Active Flexbox à l'intérieur de l'écran noir pour séparer recherche et liste */
+           flex-direction: column;
+           min-height: 0;
            height: auto;
            padding: 10px;
+           overflow: hidden; /* Empêche formellement l'écran noir de scroller */
        }
+       
+       /* La barre de recherche reste fixée ! */
+       .barre-recherche {
+           flex-shrink: 0; /* Empêche la barre de s'écraser */
+           margin-bottom: 15px; /* Écarte des Pokémon en dessous */
+       }
+
+       /* LA SEULE ZONE QUI A LE DROIT DE DEFILER : LA GRILLE ! */
+       #grille-pokemon {
+           flex: 1; /* Prend tout l'espace restant sous la recherche */
+           overflow-y: auto; /* Active le "slide" vers le bas ICI SEULEMENT */
+           min-height: 0;
+           padding-right: 5px; /* Petit espace pour laisser glisser le pouce */
+       }
+
        .partie-basse {
            flex-wrap: wrap; /* Laisse les boutons s'assembler sans exploser la hauteur */
            gap: 10px;
            justify-content: space-between;
-           padding-bottom: env(safe-area-inset-bottom); /* Fix Apple/Safari barrre du bas */
+           /* Padding en bas pour l'iPhone (barre home), si non disponible : 10px */
+           padding-bottom: env(safe-area-inset-bottom, 10px);
        }
        .carte-pokemon img {
            width: 60px;
