@@ -18,6 +18,7 @@
        align-items: center;
        min-height: 100vh;
        padding: 20px;
+       overflow-x: hidden; /* Empêche formellement la page d'aller sur les côtés */
    }
    
    /* =========================================
@@ -256,4 +257,48 @@
        padding: 10px;
        border: 2px solid #000;
        border-radius: 5px;
+   }
+
+   /* =========================================
+      7. ADAPTATION POKEDEX PLEIN ECRAN (NATIVE APP)
+      ========================================= */
+   @media (max-width: 600px) {
+       body {
+           padding: 0; /* Plus aucune marge autour, 100% écran */
+           display: block; /* On retire le centrage flex inutile */
+           background-color: #dc0a2d; /* Fond rouge ! */
+           overflow-x: hidden;
+       }
+       .pokedex {
+           width: 100vw;
+           height: 100vh;
+           max-width: none;
+           border-radius: 0; /* Angles droits */
+           border: none; /* Pas de grosse bordure noire externe */
+           padding: 15px; /* Petit padding intérieur */
+           box-shadow: none;
+           display: flex;
+           flex-direction: column;
+       }
+       .contour-ecran {
+           flex: 1; /* L'écran prend tout l'espace restant ! */
+           display: flex;
+           flex-direction: column;
+           border-radius: 10px; /* Moins agressif sur l'angle coupé en bas */
+           margin-bottom: 15px;
+           padding: 15px 10px; /* Moins large sur les côtés */
+       }
+       .ecran-interieur {
+           flex: 1; /* L'écran noir s'étire au maximum */
+           height: auto;
+       }
+       .partie-basse {
+           flex-wrap: wrap;
+           gap: 10px;
+           justify-content: space-around;
+       }
+       .carte-pokemon img {
+           width: 60px;
+           height: 60px;
+       }
    }
