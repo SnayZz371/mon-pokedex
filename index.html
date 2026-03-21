@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Pokédex</title>
+    <!-- On lie notre fichier CSS pour le côté visuel -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Le conteneur rouge principal du Pokédex -->
+    <div class="pokedex">
+        
+        <!-- 1. La partie haute : La grosse lumière bleue et les trois petites lumières -->
+        <div class="partie-haute">
+            <div class="lentille-principale"></div>
+            <div class="petites-lumieres">
+                <div class="lumiere rouge"></div>
+                <div class="lumiere jaune"></div>
+                <div class="lumiere verte"></div>
+            </div>
+        </div>
+
+        <!-- 2. La partie centrale : Le gros cadre blanc avec l'écran d'affichage -->
+        <div class="contour-ecran">
+            
+            <div class="petites-lumieres-ecran">
+                <div class="lumiere-ecran-rouge"></div>
+                <div class="lumiere-ecran-rouge"></div>
+            </div>
+            
+            <!-- C'est ici que les Pokémon vont s'afficher (l'écran noir au centre) -->
+            <div class="ecran-interieur">
+                
+                <!-- La barre de recherche -->
+                <div class="barre-recherche">
+                    <input type="text" id="champ-recherche" placeholder="Rechercher un Pokémon...">
+                </div>
+                
+                <!-- Un texte temporaire affiché quand Internet charge -->
+                <p id="message-chargement">Chargement des données en cours...</p>
+                
+                <!-- La grille qui contiendra toutes les "cartes" des Pokémon -->
+                <div id="grille-pokemon">
+                    <!-- Généré par le JavaScript -->
+                </div>
+
+            </div>
+            
+            <!-- Le petit bouton rond décoratif en dessous de l'écran -->
+            <div class="bouton-rond-rouge"></div>
+        </div>
+
+        <!-- 3. La partie basse : Les boutons et l'écran des pages -->
+        <div class="partie-basse">
+            <div class="bouton-rond-noir"></div>
+            
+            <!-- Le petit écran vert qui affiche le numéro de la page -->
+            <div class="ecran-vert-page">
+                <span id="numero-page">Page 1</span>
+            </div>
+
+            <!-- Les boutons réels pour changer de page -->
+            <div class="boutons-pagination">
+                <button id="btn-prec">◀</button>
+                <button id="btn-suiv">▶</button>
+            </div>
+            
+            <!-- La fausse croix directionnelle (juste pour le style du Pokédex) -->
+            <div class="croix-directionnelle"></div>
+        </div>
+
+    </div>
+
+    <!-- 4. La petite fenêtre popup (modale) pour les détails d'un Pokémon -->
+    <dialog id="modale-details">
+        <button id="btn-fermer-modale">X</button>
+        <h2 id="modale-nom">Nom</h2>
+        <img id="modale-image" src="" alt="Photo Pokémon">
+        
+        <div class="modale-infos">
+            <p><strong>Type(s) :</strong> <span id="modale-types"></span></p>
+            <p><strong>Poids :</strong> <span id="modale-poids"></span> kg</p>
+            <p><strong>Taille :</strong> <span id="modale-taille"></span> m</p>
+        </div>
+    </dialog>
+
+    <!-- Fichiers JavaScript séparés (Chargés dans le bon ordre !) -->
+    <script src="js/api.js"></script> <!-- En premier: Téléchargements -->
+    <script src="js/ui.js"></script>  <!-- En deuxième: Design/HTML -->
+    <script src="js/app.js"></script> <!-- A la fin: Le clic et le démarrage -->
+
+</body>
+</html>
