@@ -1,75 +1,72 @@
 /* ==========================================================
    js/app.js - Le fichier principal (Le "Cerveau")
-   Son rôle : Lier api.js et ui.js avec les clics de boutons
 ========================================================== */
 
-// 1) Variables globales
 let pageActuelle = 1;
-const nombreDePokemonsParPage = 20;
+const nombreDePokemonsParPage = 20; // Exactement 20 par page (Exigence #1)
 let decalage = 0; 
 
-// Liste de sauvegarde, très utile pour faire la recherche sans télécharger à l'infini
+// Liste de cache pour accélérer la recherche en temps réel sans re-télécharger
 let tousLesPokemonsCharges = [];
 
-// Sélection des éléments HTML "interactifs" principaux
 const boutonPrecedent = document.getElementById("btn-prec");
 const boutonSuivant = document.getElementById("btn-suiv");
 const boutonFermerModale = document.getElementById("btn-fermer-modale");
 const champRecherche = document.getElementById("champ-recherche");
 const texteChargement = document.getElementById("message-chargement");
+const grilleHTMLApp = document.getElementById("grille-pokemon");
 
 
 /**
- * 2) La Grande Fonction d'Orchestration Automatique
+ * 1) Fonction de lancement et téléchargement "Try/Catch" (Exigence de Robustesse #4)
  */
 async function chargerEtAfficherLaPage() {
-    
-    // On met l'écran visuel sur "Chargement" pendant qu'Internet travaille
-    grilleHTML.innerHTML = "";
+    grilleHTMLApp.innerHTML = "";
     texteChargement.style.display = "block";
+    texteChargement.innerText = "Chargement des données en cours...";
     tousLesPokemonsCharges = [];
 
     try {
-        // Étape A : On fait appel à "api.js" pour avoir la liste
         const listeBrute = await telechargerPokemons(decalage, nombreDePokemonsParPage);
 
-        // Étape B : Pour chaque Pokémon de cette liste...
         for (let i = 0; i < listeBrute.length; i++) {
             const nomAnglais = listeBrute[i].name;
             
-            // ... on demande les détails complets (poids, image 3D) depuis "api.js" encore
+            // On récupère "tout" : stats complètes et espèces traduites
             const infosStats = await telechargerDetailsPokemon(nomAnglais);
-            const nomFrancais = await telechargerNomFrancais(nomAnglais, infosStats.name);
+            const especeVf = await telechargerNomFrancaisEtEvolutionUrl(nomAnglais, infosStats.name);
 
-            // Choix de la meilleure image (priorité au sprite "showdown" 3D)
-            let bellePhoto = infosStats.sprites.other["official-artwork"].front_default;
-            if (infosStats.sprites.other.showdown && infosStats.sprites.other.showdown.front_default) {
-                bellePhoto = infosStats.sprites.other.showdown.front_default;
-            } else if (!bellePhoto) {
-                 bellePhoto = infosStats.sprites.front_default;
+            // Images avant/arrière pour la modale (Exigence #3)
+            let imgFaces = infosStats.sprites.front_default;
+            let imgDos = infosStats.sprites.back_default; 
+            
+            // Si on préfère l'image HD officielle sur la liste (plus joli)
+            if (infosStats.sprites.other["official-artwork"].front_default) {
+                imgFaces = infosStats.sprites.other["official-artwork"].front_default;
             }
 
-            // On construit une petite boîte maison avec ce qu'on aime de l'API
-            const monPokemon = {
+            // Un très gros objet qui contient tout !
+            const monPokemonObj = {
                 identifiant: infosStats.id,
-                nom: nomFrancais,
-                photo: bellePhoto,
+                nom: especeVf.nom,
+                photoFront: imgFaces,
+                photoBack: imgDos,
                 poids: infosStats.weight,
                 taille: infosStats.height,
-                types: infosStats.types
+                types: infosStats.types,
+                statistiques: infosStats.stats,     // Exigence stats
+                capacites: infosStats.abilities,    // Exigence abilities
+                adresseEvolutions: especeVf.evolutionUrl
             };
 
-            // On le garde dans notre liste en haut
-            tousLesPokemonsCharges.push(monPokemon);
+            tousLesPokemonsCharges.push(monPokemonObj);
             
-            // Étape C : On fait appel à "ui.js" pour le dessiner à l'écran
-            dessinerCarteHTML(monPokemon);
+            // On le dessine sur la page, ET on lui transmet la mission à accomplir si on clique dessus
+            dessinerCarteHTML(monPokemonObj, ouvrirModaleEtChargerEvolutionLogique);
         }
 
-        // Fini de tout charger !
         texteChargement.style.display = "none";
         
-        // Gestion visuelle de la pagination en bas
         mettreAJourTextePage(pageActuelle);
         if (pageActuelle === 1) { 
             boutonPrecedent.disabled = true; 
@@ -78,24 +75,60 @@ async function chargerEtAfficherLaPage() {
         }
 
     } catch (erreur) {
-        console.error("Problème détecté :", erreur);
-        texteChargement.innerText = "Erreur de connexion internet ou serveur.";
+        console.error("Problème critique :", erreur);
+        
+        // Exigence #4 : Messages d'Erreur exacts
+        texteChargement.style.display = "block";
+        if (erreur.message && erreur.message.includes("fetch") || erreur instanceof TypeError) {
+            texteChargement.innerText = "Erreur de connexion, veuillez réessayer";
+        } else {
+            texteChargement.innerText = "Une erreur inattendue est survenue";
+        }
+    }
+}
+
+
+/**
+ * 2) Action asynchrone pour la Modale (Découplage pour de meilleures perfs)
+ * Ce code ne s'exécute QUE si le joueur clique sur une carte.
+ */
+async function ouvrirModaleEtChargerEvolutionLogique(poKemon) {
+    // Étape A: Ouvre immédiatement la modale avec les infos qu'on a déjà (affichage instantané)
+    afficherDetailsPopupBasique(poKemon);
+
+    // Étape B: On part à la recherche lente des évolutions !
+    const emplacementTxtEvo = document.getElementById("modale-evolutions");
+    
+    if (!poKemon.adresseEvolutions) {
+        emplacementTxtEvo.innerText = "Information inconnue.";
+        return;
+    }
+
+    try {
+        const listeEvolutionsTraduites = await telechargerChaineEvolutions(poKemon.adresseEvolutions);
+        
+        // Si la liste contient plus d'un pokémon (ex: Salamèche -> Reptincel -> Dracaufeu)
+        if (listeEvolutionsTraduites.length > 1) {
+            emplacementTxtEvo.innerText = listeEvolutionsTraduites.join(" ➡ ");
+        } else {
+            emplacementTxtEvo.innerText = "Ce Pokémon n'évolue pas.";
+        }
+    } catch (erreurEvo) {
+        emplacementTxtEvo.innerText = "Impossible de récupérer la famille d'évolution.";
     }
 }
 
 
 /* ==========================================================
-   3) INTERACTIONS UTILISATEUR (Gestion des clics simples)
+   3) INTERACTIONS UTILISATEUR 
 ========================================================== */
 
-// Au clic sur "Page Suivante", on décale de +20 et on recharge
 boutonSuivant.addEventListener("click", function() {
     decalage = decalage + nombreDePokemonsParPage;
     pageActuelle = pageActuelle + 1;
     chargerEtAfficherLaPage();
 });
 
-// Au clic sur "Page Précédente", on recule de 20 (si possible)
 boutonPrecedent.addEventListener("click", function() {
     if (pageActuelle > 1) {
         decalage = decalage - nombreDePokemonsParPage;
@@ -104,24 +137,35 @@ boutonPrecedent.addEventListener("click", function() {
     }
 });
 
-// Bouton Rouge "Croix" de la Modale pour la fermer
+// Bouton renommé "Retour à la liste" selon l'exigence
 boutonFermerModale.addEventListener("click", function() {
-    boiteModale.close();
+    document.getElementById("modale-details").close();
 });
 
-// Dès qu'on re-tape une lettre dans la recherche, on filtre
+// Écouteur de Filtrage par Recherche (Exigence #2)
 champRecherche.addEventListener("keyup", function(infoEvenement) {
-    const texteSaisi = infoEvenement.target.value.toLowerCase();
-    grilleHTML.innerHTML = "";
+    const texteSaisi = infoEvenement.target.value.toLowerCase().trim();
+    grilleHTMLApp.innerHTML = "";
+    
+    let nombrePokemonsTrouves = 0;
 
-    // On revérifie toute notre mémoire pour voir qui dessiner (appel de ui.js encore une fois)
+    // Filtre la liste mémoire sans avoir à repasser par Internet !
     for (let i = 0; i < tousLesPokemonsCharges.length; i++) {
-        const monPetitPokm = tousLesPokemonsCharges[i];
-        if (monPetitPokm.nom.toLowerCase().includes(texteSaisi)) {
-            dessinerCarteHTML(monPetitPokm);
+        const petitPkmMecanique = tousLesPokemonsCharges[i];
+        if (petitPkmMecanique.nom.toLowerCase().includes(texteSaisi)) {
+            dessinerCarteHTML(petitPkmMecanique, ouvrirModaleEtChargerEvolutionLogique);
+            nombrePokemonsTrouves++;
         }
+    }
+
+    // Gestion du message d'erreur si vide (Exigence #4 et #2)
+    if (nombrePokemonsTrouves === 0 && texteSaisi !== "") {
+        texteChargement.innerText = "Aucun Pokémon trouvé avec ce nom";
+        texteChargement.style.display = "block";
+    } else {
+        texteChargement.style.display = "none";
     }
 });
 
-// 4) Démarrage Immédiat dès la lecture de ce fichier par le navigateur web
+// Allumage direct à l'ouverture !
 chargerEtAfficherLaPage();

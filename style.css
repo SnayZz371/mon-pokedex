@@ -158,8 +158,9 @@
        font-weight: bold;
    }
    
-   .carte-pokemon:hover {
-       background-color: #61ce70; /* Vert plus clair au survol */
+   .carte-pokemon:hover, .carte-pokemon:focus {
+       background-color: #61ce70; /* Vert plus clair au survol ou à la sélection clavier */
+       outline: 3px solid #fff; /* Focus outline contrasté pour l'accessibilité WCAG AA */
    }
    
    .carte-pokemon img {
@@ -218,7 +219,7 @@
    }
    
    /* =========================================
-      6. LA BOÎTE POPUP (MODALE)
+      6. LA BOÎTE POPUP (MODALE ET STATS)
       ========================================= */
    dialog {
        margin: auto; /* Centre la boite de force */
@@ -226,7 +227,10 @@
        border: 4px solid #000;
        border-radius: 10px;
        background-color: #dedede;
-       width: 300px;
+       width: 90%;
+       max-width: 380px;
+       max-height: 85vh; /* Protège le dépassement hors écran */
+       overflow-y: auto; /* Autorise à slider les grandes listes de stats */
        text-align: center;
    }
    
@@ -235,28 +239,50 @@
    }
    
    #btn-fermer-modale {
-       float: right; /* Aligne le bouton de fermeture à droite */
+       display: block;
+       width: 100%;
+       margin-bottom: 15px;
        background: red;
        color: white;
        border: 2px solid #000;
-       padding: 5px 10px;
+       padding: 10px;
        font-weight: bold;
        cursor: pointer;
        border-radius: 4px;
    }
    
-   #modale-image {
-       width: 120px;
-       height: 120px;
+   .modale-images {
+       display: flex;
+       justify-content: center;
+       gap: 10px;
+   }
+
+   .modale-images img {
+       width: 90px;
+       height: 90px;
        margin: 10px 0;
+       background: rgba(255,255,255,0.4);
+       border-radius: 5px;
    }
    
    .modale-infos {
-       text-align: left; /* Aligne le texte à gauche au lieu d'au centre */
+       text-align: left;
        background: #fff;
-       padding: 10px;
+       padding: 15px;
        border: 2px solid #000;
        border-radius: 5px;
+       font-size: 14px;
+   }
+
+   .modale-infos hr {
+       border: none;
+       border-top: 1px dashed #ccc;
+       margin: 10px 0;
+   }
+
+   .modale-infos ul {
+       margin-left: 20px;
+       margin-top: 5px;
    }
 
    /* =========================================
