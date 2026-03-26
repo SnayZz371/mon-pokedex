@@ -1,12 +1,12 @@
 /* ==========================================================
-   js/ui.js - Fichier gérant l'Interface Visuelle (HTML)
+   js/ui.js - Gestionnaire de l'Interface Utilisateur (DOM)
 ========================================================== */
 
 const grilleHTML = document.getElementById("grille-pokemon");
 const boiteModale = document.getElementById("modale-details");
 const divNumeroPage = document.getElementById("numero-page");
 
-// Exigence #1 : Types avec couleurs distinctes
+// Définition statique des codes hexadécimaux pour chaque classification de type
 const COULEURS_TYPES = {
     normal: '#A8A77A', fire: '#EE8130', water: '#6390F0', electric: '#F7D02C',
     grass: '#7AC74C', ice: '#96D9D6', fighting: '#C22E28', poison: '#A33EA1',
@@ -16,17 +16,17 @@ const COULEURS_TYPES = {
 };
 
 /**
- * Construit la carte d'un Pokémon sur la page principale.
+ * Instancie et insère le composant DOM (composant Carte) correspondant au Pokémon.
  */
 function dessinerCarteHTML(lePokemon, comportementAuClicEtEntree) {
     const boiteHtml = document.createElement("div");
     boiteHtml.className = "carte-pokemon";
     
-    // ACCESSIBILITÉ : Rendre la div "focalisable" et lue comme un bouton
+    // Attributs interactifs (Accessibilité WCAG et navigation clavier ARIA)
     boiteHtml.setAttribute("tabindex", "0");
     boiteHtml.setAttribute("role", "button");
 
-    // Générer le HTML pour les petites pastilles colorées de Type
+    // Génération du nœud HTML contenant les puces de description de types
     let badgesTypesHTML = '<div class="carte-pokemon-types" style="margin-top:5px;">';
     for (let i = 0; i < lePokemon.types.length; i++) {
         let nomTypeAnglais = lePokemon.types[i].type.name;
@@ -35,20 +35,20 @@ function dessinerCarteHTML(lePokemon, comportementAuClicEtEntree) {
     }
     badgesTypesHTML += '</div>';
 
-    // Remplissage du contenu de la carte
+    // Rendu en structure DOM interne
     boiteHtml.innerHTML = `
-        <img src="${lePokemon.photoFront}" alt="Image de ${lePokemon.nom}">
+        <img src="${lePokemon.photoFront}" alt="Image frontale ${lePokemon.nom}">
         <p># ${lePokemon.identifiant}</p>
         <p>${lePokemon.nom}</p>
         ${badgesTypesHTML}
     `;
 
-    // ÉCOUTEUR SOURIS
+    // Événement déclencheur standard basé sur le clic
     boiteHtml.addEventListener("click", function() {
         comportementAuClicEtEntree(lePokemon);
     });
 
-    // ÉCOUTEUR CLAVIER (ACCESSIBILITÉ WCAG)
+    // Événement déclencheur d'accessibilité (Validation Entrée/Espace)
     boiteHtml.addEventListener("keydown", function(evenementTouches) {
         if (evenementTouches.key === "Enter" || evenementTouches.key === " ") {
             comportementAuClicEtEntree(lePokemon);
@@ -59,12 +59,12 @@ function dessinerCarteHTML(lePokemon, comportementAuClicEtEntree) {
 }
 
 /**
- * Fonction remplissant la fenêtre popup avec les bonnes données de base (rapides)
+ * Alimente la vue de détails `<dialog>` et actualise le DOM de la fenêtre superposée.
  */
 function afficherDetailsPopupBasique(lePokemon) {
     document.getElementById("modale-nom").innerText = lePokemon.nom;
     
-    // Exigence #3 : Photos Front ET Back
+    // Processus de conditionnement des ressources d'images dorsales et frontales
     const imgFront = document.getElementById("modale-image-front");
     const imgBack = document.getElementById("modale-image-back");
     
@@ -79,7 +79,7 @@ function afficherDetailsPopupBasique(lePokemon) {
     document.getElementById("modale-poids").innerText = lePokemon.poids / 10;
     document.getElementById("modale-taille").innerText = lePokemon.taille / 10;
 
-    // Pastilles Couleurs pour la modale
+    // Concaténation séquentielle des pastilles couleurs internes
     let HTMLTypesDoc = "";
     for (let i = 0; i < lePokemon.types.length; i++) {
         let nomType = lePokemon.types[i].type.name;
@@ -87,15 +87,15 @@ function afficherDetailsPopupBasique(lePokemon) {
     }
     document.getElementById("modale-types").innerHTML = HTMLTypesDoc;
 
-    // Exigence #3 : Capacités (Abilities)
+    // Concaténation des compétences matérielles et affichage logique en chaîne
     let texteCapacites = "";
     for (let c = 0; c < lePokemon.capacites.length; c++) {
         texteCapacites += lePokemon.capacites[c].ability.name;
         if (c < lePokemon.capacites.length - 1) texteCapacites += ", ";
     }
-    document.getElementById("modale-capacites").innerText = texteCapacites || "Aucune";
+    document.getElementById("modale-capacites").innerText = texteCapacites || "Non listé";
 
-    // Exigence #3 : Statistiques Complètes
+    // Rendu hiérarchique list-item des statistiques quantitatives de combat
     const statsHTML = document.getElementById("modale-stats-liste");
     statsHTML.innerHTML = "";
     for (let s = 0; s < lePokemon.statistiques.length; s++) {
@@ -104,14 +104,14 @@ function afficherDetailsPopupBasique(lePokemon) {
         statsHTML.appendChild(elementListe);
     }
 
-    // Réinitialise les évolutions sur "Chargement..."
-    document.getElementById("modale-evolutions").innerText = "Recherche en cours...";
+    // Réinitialisation conditionnelle préalable à l'appel réseau des évolutions
+    document.getElementById("modale-evolutions").innerText = "Résolution en cours...";
 
     boiteModale.showModal();
 }
 
 /**
- * Affiche "Page X" en bas de l'écran
+ * Actualise l'indicateur d'état temporel de pagination.
  */
 function mettreAJourTextePage(numeroPageActuelle) {
     divNumeroPage.innerText = "Page " + numeroPageActuelle;

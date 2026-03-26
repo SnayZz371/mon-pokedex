@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Pokédex Accessible</title>
-    <!-- On lie notre fichier CSS pour le côté visuel (v4 pour vider le cache) -->
-    <link rel="stylesheet" href="style.css?v=4">
+    <!-- Chargement de la feuille de style avec versioning pour forcer la mise à jour du cache -->
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
-    <!-- Sémantique: <main> au lieu de <div> pour la zone principale du site -->
+    <!-- Conteneur principal de l'application -->
     <main class="pokedex">
         
-        <!-- Sémantique: <header> pour l'en-tête de l'appareil -->
+        <!-- En-tête visuel -->
         <header class="partie-haute">
             <div class="lentille-principale"></div>
             <div class="petites-lumieres">
@@ -22,7 +22,7 @@
             </div>
         </header>
 
-        <!-- Sémantique: <section> pour regrouper l'écran -->
+        <!-- Section centrale d'affichage -->
         <section class="contour-ecran">
             
             <div class="petites-lumieres-ecran">
@@ -33,17 +33,17 @@
             <article class="ecran-interieur">
                 
                 <div class="barre-recherche">
-                    <!-- Accessibilité (WCAG): Ajout d'un aria-label pour les lecteurs d'écran (aveugles/malvoyants) -->
+                    <!-- Champ de recherche textuel (WCAG: aria-label défini) -->
                     <input type="text" id="champ-recherche" placeholder="Rechercher un Pokémon..." aria-label="Rechercher un Pokémon par son nom">
                 </div>
                 
-                <!-- Accessibilité: aria-live="polite" force le lecteur vocal à dicter ce message quand il change (ex: Erreur) -->
+                <!-- Zone de notification dynamique pour lecteurs d'écran (WCAG: aria-live) -->
                 <div aria-live="polite" id="zone-messages">
                     <p id="message-chargement">Chargement des données en cours...</p>
                 </div>
                 
                 <div id="grille-pokemon">
-                    <!-- Généré par le JavaScript -->
+                    <!-- Rendu dynamique de la grille via script -->
                 </div>
 
             </article>
@@ -51,15 +51,16 @@
             <div class="bouton-rond-rouge"></div>
         </section>
 
-        <!-- Sémantique: <nav> pour la zone de navigation -->
+        <!-- Commandes de navigation -->
         <nav class="partie-basse">
             <div class="bouton-rond-noir"></div>
             
-            <!-- aria-live lit le nouveau numéro de page -->
+            <!-- Indicateur de page courante -->
             <div class="ecran-vert-page" aria-live="polite">
                 <span id="numero-page">Page 1</span>
             </div>
 
+            <!-- Contrôles de pagination -->
             <div class="boutons-pagination">
                 <button id="btn-prec" aria-label="Page précédente">◀ Précédent</button>
                 <button id="btn-suiv" aria-label="Page suivante">Suivant ▶</button>
@@ -70,15 +71,15 @@
 
     </main>
 
-    <!-- La fenêtre popup. aria-labelledby la lie à son titre pour l'accessibilité -->
+    <!-- Modale de détails (WCAG: utilisation de dialog et aria-labelledby) -->
     <dialog id="modale-details" aria-labelledby="modale-nom" aria-modal="true">
-        <!-- Bouton de retour tel que demandé dans les exigences -->
+        <!-- Contrôle de fermeture de la modale -->
         <button id="btn-fermer-modale">Retour à la liste</button>
         
         <h2 id="modale-nom">Nom</h2>
         
         <div class="modale-images">
-            <!-- Images Face et Dos (exigence) -->
+            <!-- Emplacements pour aperçus frontal et dorsal -->
             <img id="modale-image-front" src="" alt="Image de face">
             <img id="modale-image-back" src="" alt="Image de dos" style="display:none;">
         </div>
@@ -99,6 +100,7 @@
         </div>
     </dialog>
 
+    <!-- Dépendances logiques (exécution séquentielle) -->
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>

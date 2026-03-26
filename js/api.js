@@ -1,21 +1,21 @@
 /* ==========================================================
-   js/api.js - Fichier gérant la connexion internet
+   api.js - Service réseau et extraction de données 
 ========================================================== */
 
 /**
- * Fonction asynchrone pour télécharger une liste de Pokémons.
+ * Récupère une liste séquentielle de Pokémon via l'API REST.
  */
 async function telechargerPokemons(decalage, limite) {
     const adresseRecherche = "https://pokeapi.co/api/v2/pokemon?offset=" + decalage + "&limit=" + limite;
     const reponse = await fetch(adresseRecherche);
-    // Gestion d'erreur renforcée
+    // Renvoi d'erreur pour traitement par la couche fonctionnelle
     if (!reponse.ok) throw new Error("API Indisponible");
     const donnees = await reponse.json();
     return donnees.results;
 }
 
 /**
- * Fonction pour télécharger les détails d'un Pokémon complet (stats, sprites...)
+ * Récupère le manifeste technique (sprites, stats, types) d'un spécimen.
  */
 async function telechargerDetailsPokemon(nomAnglais) {
     const reponse = await fetch("https://pokeapi.co/api/v2/pokemon/" + nomAnglais);
@@ -24,12 +24,13 @@ async function telechargerDetailsPokemon(nomAnglais) {
 }
 
 /**
- * Récupère le vrai nom français et l'URL de sa ligne d'évolution.
+ * Récupère les métadonnées de l'espèce, la traduction française, 
+ * et la référence vers la chaîne d'évolution.
  */
 async function telechargerNomFrancaisEtEvolutionUrl(nomAnglais, nomParDefaut) {
     const reponse = await fetch("https://pokeapi.co/api/v2/pokemon-species/" + nomAnglais);
     
-    // Si l'espèce n'existe pas (très rare), on renvoie juste les données par défaut sans buguer (Exigence robustesse)
+    // Rétrocompatibilité en cas d'absence de données d'espèce
     if (!reponse.ok) {
         return { nom: nomParDefaut, evolutionUrl: null };
     }
@@ -40,11 +41,10 @@ async function telechargerNomFrancaisEtEvolutionUrl(nomAnglais, nomParDefaut) {
     for (let j = 0; j < informationsEspece.names.length; j++) {
         if (informationsEspece.names[j].language.name === "fr") {
             nomFrancaisTrouve = informationsEspece.names[j].name;
-            break; // On arrête la boucle si on a trouvé
+            break;
         }
     }
     
-    // On récupère "l'adresse web" qui contient la famille d'évolution
     let adresseEvolution = null;
     if (informationsEspece.evolution_chain && informationsEspece.evolution_chain.url) {
         adresseEvolution = informationsEspece.evolution_chain.url;
@@ -54,7 +54,8 @@ async function telechargerNomFrancaisEtEvolutionUrl(nomAnglais, nomParDefaut) {
 }
 
 /**
- * NOUVEAUTÉ : Fouiller l'arbre des évolutions complexe fourni par l'API
+ * Parcourt récursivement l'arborescence d'évolution 
+ * puis gère les traductions localisées séquentiellement.
  */
 async function telechargerChaineEvolutions(urlChaine) {
     const reponse = await fetch(urlChaine);
@@ -63,22 +64,22 @@ async function telechargerChaineEvolutions(urlChaine) {
     let listeEvolutionsAnglais = [];
     let noeudCourant = donnees.chain;
     
-    // On descend la chaîne d'évolution ligne par ligne (Ex: Bulbizarre -> Herbizarre -> Florizarre)
+    // Descente de l'arbre d'évolution principal
     while (noeudCourant) {
         listeEvolutionsAnglais.push(noeudCourant.species.name); 
         
-        // Si ce pokémon a une suite d'évolution, on avance sur le suivant
+        // Progression au noeud enfant (limité au premier choix de branchement)
         if (noeudCourant.evolves_to && noeudCourant.evolves_to.length > 0) {
             noeudCourant = noeudCourant.evolves_to[0];
         } else {
-            noeudCourant = null; // Fin de l'arbre
+            noeudCourant = null; // Fin de l'embranchement
         }
     }
     
-    // On doit redemander à l'API les traductions françaises pour chaque évolution !
+    // Conversion de la liste de nomenclature EN vers FR
     let listeEvolutionsFrancais = [];
     for(let k = 0; k < listeEvolutionsAnglais.length; k++) {
-        // Astuce : On utilise la fonction d'au-dessus pour trouver les noms !
+        // Utilisation du service existant pour récupérer la traduction unique
         const traduction = await telechargerNomFrancaisEtEvolutionUrl(listeEvolutionsAnglais[k], listeEvolutionsAnglais[k]);
         listeEvolutionsFrancais.push(traduction.nom);
     }

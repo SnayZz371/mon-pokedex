@@ -1,358 +1,367 @@
 /* =========================================
-   STYLE GLOBAL DE LA PAGE (CSS TRES SIMPLE)
+   FEUILLE DE STYLE PRINCIPALE DU PORTAIL
    ========================================= */
 
-   /* Effacer les marges de base du navigateur */
-   * {
-       box-sizing: border-box;
-       margin: 0;
-       padding: 0;
-   }
-   
-   /* Le fond sombre derrière l'appareil */
-   body {
-       background-color: #222; /* Gris très sombre */
-       font-family: Arial, sans-serif;
-       display: flex; /* Centre l'appareil sur l'écran */
-       justify-content: center;
-       align-items: center;
-       min-height: 100vh;
-       padding: 20px;
-       overflow-x: hidden; /* Empêche formellement la page d'aller sur les côtés */
-   }
-   
-   /* =========================================
-      1. COQUE ROUGE DU POKÉDEX
-      ========================================= */
-   .pokedex {
-       background-color: #dc0a2d; /* Le fameux rouge Pokédex */
-       width: 100%;
-       max-width: 450px; /* Taille maximale */
-       border-radius: 15px; /* Coins arrondis */
-       border: 4px solid #000; /* Grosse ligne noire classique Pokémon */
-       padding: 20px;
-       box-shadow: 10px 10px 0px rgba(0,0,0,0.5); /* Ombre très simple ("Flat") */
-   }
-   
-   /* =========================================
-      2. PARTIE HAUTE (Lentilles & Voyants)
-      ========================================= */
-   .partie-haute {
-       display: flex;
-       align-items: center;
-       border-bottom: 3px solid #000;
-       padding-bottom: 20px;
-       margin-bottom: 20px;
-   }
-   
-   /* Le gros capteur bleu */
-   .lentille-principale {
-       width: 60px;
-       height: 60px;
-       background-color: #28aafa; /* Bleu clair */
-       border: 4px solid #fff; /* Contour blanc */
-       border-radius: 50%; /* Fait un rond parfait */
-       box-shadow: 0 0 0 3px #000; /* Ligne noire après le contour blanc */
-       margin-right: 20px;
-   }
-   
-   /* Les 3 petites LED de couleur */
-   .petites-lumieres {
-       display: flex;
-       gap: 8px; /* Espace entre chaque lumière */
-       align-items: flex-start;
-       margin-top: -30px; /* Remonte le bloc pour être aligné comme le vrai */
-   }
-   
-   .lumiere {
-       width: 15px;
-       height: 15px;
-       border-radius: 50%;
-       border: 2px solid #000;
-   }
-   
-   .lumiere.rouge { background-color: #ff0000; }
-   .lumiere.jaune { background-color: #ffcc00; }
-   .lumiere.verte { background-color: #32cb65; }
-   
-   /* =========================================
-      3. LA ZONE "ÉCRAN"
-      ========================================= */
-   
-   /* Le bloc gris/blanc qui fait l'encadrement de l'écran principal */
-   .contour-ecran {
-       background-color: #dedede; /* Gris très clair */
-       border: 3px solid #000;
-       /* Voici comment on fait le style biseauté en bas à gauche de la Gameboy/Pokédex : */
-       border-radius: 10px 10px 10px 40px; 
-       padding: 15px 30px;
-       margin-bottom: 20px;
-   }
-   
-   .petites-lumieres-ecran {
-       display: flex;
-       justify-content: center;
-       gap: 20px;
-       margin-bottom: 10px;
-   }
-   
-   .lumiere-ecran-rouge {
-       width: 10px;
-       height: 10px;
-       background-color: #ff0000;
-       border: 1px solid #000;
-       border-radius: 50%;
-   }
-   
-   .bouton-rond-rouge {
-       width: 20px;
-       height: 20px;
-       background-color: red;
-       border: 2px solid #000;
-       border-radius: 50%;
-       margin-top: 10px;
-   }
-   
-   /* Le vrai écran noir rectangulaire */
-   .ecran-interieur {
-       background-color: #232323; /* Presque noir */
-       border: 3px solid #000;
-       border-radius: 10px;
-       height: 400px; /* Taille fixe pour l'écran */
-       overflow-y: scroll; /* Permet de "scroller" dans la liste */
-       padding: 15px;
-   }
-   
-   /* La barre de recherche texte */
-   .barre-recherche input {
-       width: 100%;
-       padding: 8px;
-       margin-bottom: 15px;
-       border-radius: 4px;
-       border: 1px solid #000;
-   }
-   
-   #message-chargement {
-       color: #fff;
-       text-align: center;
-       margin-top: 20px;
-   }
-   
-   /* =========================================
-      4. LES CARTES POKEMON (Liste)
-      ========================================= */
-   #grille-pokemon {
-       display: grid;
-       grid-template-columns: repeat(2, 1fr); /* Divise l'écran en 2 colonnes simples */
-       gap: 10px;
-   }
-   
-   .carte-pokemon {
-       background-color: #51ae5f; /* Vert "Gameboy" vintage */
-       border: 2px solid #000;
-       border-radius: 8px;
-       padding: 10px;
-       text-align: center;
-       cursor: pointer; /* Change la flèche de la souris en main */
-       color: #000;
-       font-weight: bold;
-   }
-   
-   .carte-pokemon:hover, .carte-pokemon:focus {
-       background-color: #61ce70; /* Vert plus clair au survol ou à la sélection clavier */
-       outline: 3px solid #fff; /* Focus outline contrasté pour l'accessibilité WCAG AA */
-   }
-   
-   .carte-pokemon img {
-       width: 80px;
-       height: 80px;
-       display: block;
-       margin: 0 auto; /* Pour centrer l'image */
-   }
-   
-   /* =========================================
-      5. PARTIE BASSE (Croix, Boutons)
-      ========================================= */
-   .partie-basse {
-       display: flex;
-       justify-content: space-between;
-       align-items: center;
-   }
-   
-   .bouton-rond-noir {
-       width: 35px;
-       height: 35px;
-       background-color: #222;
-       border-radius: 50%;
-       border: 2px solid #000;
-   }
-   
-   /* Petit rectangle vert qui affiche "Page 1" */
-   .ecran-vert-page {
-       background-color: #51ae5f;
-       border: 2px solid #000;
-       padding: 5px 15px;
-       border-radius: 5px;
-       font-weight: bold;
-   }
-   
-   /* Boutons pour Suivant et Précédent */
-   .boutons-pagination button {
-       background-color: #222;
-       color: #fff;
-       border: 2px solid #000;
-       padding: 8px 12px;
-       cursor: pointer;
-       border-radius: 4px;
-   }
-   .boutons-pagination button:disabled {
-       opacity: 0.5; /* Rend le bouton à moitié transparent s'il est désactivé */
-   }
-   
-   /* Une belle croix directionnelle basique faite en CSS pur */
-   .croix-directionnelle {
-       width: 60px;
-       height: 60px;
-       background-color: #222;
-       /* Cette propriété coupe carrément le fond noir en forme de croix '+' ! */
-       clip-path: polygon(33% 0, 66% 0, 66% 33%, 100% 33%, 100% 66%, 66% 66%, 66% 100%, 33% 100%, 33% 66%, 0 66%, 0 33%, 33% 33%);
-   }
-   
-   /* =========================================
-      6. LA BOÎTE POPUP (MODALE ET STATS)
-      ========================================= */
-   dialog {
-       margin: auto; /* Centre la boite de force */
-       padding: 20px;
-       border: 4px solid #000;
-       border-radius: 10px;
-       background-color: #dedede;
-       width: 90%;
-       max-width: 380px;
-       max-height: 85vh; /* Protège le dépassement hors écran */
-       overflow-y: auto; /* Autorise à slider les grandes listes de stats */
-       text-align: center;
-   }
-   
-   dialog::backdrop {
-       background: rgba(0,0,0,0.8); /* Fond arrière sombre */
-   }
-   
-   #btn-fermer-modale {
-       display: block;
-       width: 100%;
-       margin-bottom: 15px;
-       background: red;
-       color: white;
-       border: 2px solid #000;
-       padding: 10px;
-       font-weight: bold;
-       cursor: pointer;
-       border-radius: 4px;
-   }
-   
-   .modale-images {
-       display: flex;
-       justify-content: center;
-       gap: 10px;
-   }
+/* Modèle de boîte restrictif et suppression native des marges et espacements */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-   .modale-images img {
-       width: 90px;
-       height: 90px;
-       margin: 10px 0;
-       background: rgba(255,255,255,0.4);
-       border-radius: 5px;
-   }
-   
-   .modale-infos {
-       text-align: left;
-       background: #fff;
-       padding: 15px;
-       border: 2px solid #000;
-       border-radius: 5px;
-       font-size: 14px;
-   }
+/* Base Viewport et ancrage général */
+body {
+    background-color: #222; 
+    font-family: Arial, sans-serif;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden; 
+}
 
-   .modale-infos hr {
-       border: none;
-       border-top: 1px dashed #ccc;
-       margin: 10px 0;
-   }
+/* =========================================
+   1. STRUCTURE EXTERNE (Conteneur parent)
+   ========================================= */
+.pokedex {
+    background-color: #dc0a2d; 
+    width: 100%;
+    max-width: 450px; 
+    border-radius: 15px; 
+    border: 4px solid #000; 
+    padding: 20px;
+    box-shadow: 10px 10px 0px rgba(0,0,0,0.5); 
+}
 
-   .modale-infos ul {
-       margin-left: 20px;
-       margin-top: 5px;
-   }
+/* =========================================
+   2. BLOC SUPÉRIEUR (Rétroéclairage / Capteurs)
+   ========================================= */
+.partie-haute {
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid #000;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
 
-   /* =========================================
-      7. ADAPTATION POKEDEX PLEIN ECRAN (NATIVE APP)
-      ========================================= */
-   @media (max-width: 600px) {
-       body {
-           padding: 0;
-           margin: 0;
-           background-color: #dc0a2d; /* Fond rouge */
-           overflow: hidden; /* Empêche le défilement de touuute la page web */
-       }
-       .pokedex {
-           /* LA SOLUTION ULTIME : Fixe le Pokédex aux bords du téléphone ! */
-           position: fixed;
-           top: 0;
-           left: 0;
-           right: 0;
-           bottom: 0;
-           width: 100%;
-           height: 100%;
-           border-radius: 0;
-           border: none;
-           padding: 10px;
-           box-shadow: none;
-           display: flex; /* Active les boites flexibles */
-           flex-direction: column; /* Empile de haut en bas */
-       }
-       .contour-ecran {
-           flex: 1; /* L'écran prend tout l'espace restant au milieu ! */
-           display: flex;
-           flex-direction: column;
-           border-radius: 10px;
-           margin-bottom: 10px;
-           padding: 10px;
-           min-height: 0;
-       }
-       .ecran-interieur {
-           flex: 1;
-           display: flex; /* Active Flexbox à l'intérieur de l'écran noir pour séparer recherche et liste */
-           flex-direction: column;
-           min-height: 0;
-           height: auto;
-           padding: 10px;
-           overflow: hidden; /* Empêche formellement l'écran noir de scroller */
-       }
-       
-       /* La barre de recherche reste fixée ! */
-       .barre-recherche {
-           flex-shrink: 0; /* Empêche la barre de s'écraser */
-           margin-bottom: 15px; /* Écarte des Pokémon en dessous */
-       }
+/* Capteur optique principal */
+.lentille-principale {
+    width: 60px;
+    height: 60px;
+    background-color: #28aafa; 
+    border: 4px solid #fff; 
+    border-radius: 50%; 
+    box-shadow: 0 0 0 3px #000; 
+    margin-right: 20px;
+}
 
-       /* LA SEULE ZONE QUI A LE DROIT DE DEFILER : LA GRILLE ! */
-       #grille-pokemon {
-           flex: 1; /* Prend tout l'espace restant sous la recherche */
-           overflow-y: auto; /* Active le "slide" vers le bas ICI SEULEMENT */
-           min-height: 0;
-           padding-right: 5px; /* Petit espace pour laisser glisser le pouce */
-       }
+/* Interface LED multicanaux */
+.petites-lumieres {
+    display: flex;
+    gap: 8px; 
+    align-items: flex-start;
+    margin-top: -30px; 
+}
 
-       .partie-basse {
-           flex-wrap: wrap; /* Laisse les boutons s'assembler sans exploser la hauteur */
-           gap: 10px;
-           justify-content: space-between;
-           /* Padding en bas pour l'iPhone (barre home), si non disponible : 10px */
-           padding-bottom: env(safe-area-inset-bottom, 10px);
-       }
-       .carte-pokemon img {
-           width: 60px;
-           height: 60px;
-       }
-   }
+.lumiere {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2px solid #000;
+}
+
+.lumiere.rouge { background-color: #ff0000; }
+.lumiere.jaune { background-color: #ffcc00; }
+.lumiere.verte { background-color: #32cb65; }
+
+/* =========================================
+   3. BLOC CENTRAL DE L'ÉCRAN
+   ========================================= */
+
+/* Châssis intermédiaire structurant l'écran physique */
+.contour-ecran {
+    background-color: #dedede; 
+    border: 3px solid #000;
+    border-radius: 10px 10px 10px 40px; 
+    padding: 15px 30px;
+    margin-bottom: 20px;
+}
+
+/* Diodes rouges secondaires */
+.petites-lumieres-ecran {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.lumiere-ecran-rouge {
+    width: 10px;
+    height: 10px;
+    background-color: #ff0000;
+    border: 1px solid #000;
+    border-radius: 50%;
+}
+
+.bouton-rond-rouge {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border: 2px solid #000;
+    border-radius: 50%;
+    margin-top: 10px;
+}
+
+/* Panneau noir de résolution et d'affichage interactif */
+.ecran-interieur {
+    background-color: #232323; 
+    border: 3px solid #000;
+    border-radius: 10px;
+    height: 400px; 
+    overflow-y: scroll; 
+    padding: 15px;
+}
+
+/* Champ formulaire d'interrogation de chaîne textuelle */
+.barre-recherche input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid #000;
+}
+
+/* Label informatif de processus HTTP/I.O */
+#message-chargement {
+    color: #fff;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* =========================================
+   4. GRILLE D'ÉLÉMENTS SPÉCIMENS
+   ========================================= */
+#grille-pokemon {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 10px;
+}
+
+/* Instanciation unique d'une carte Pokémon */
+.carte-pokemon {
+    background-color: #51ae5f; 
+    border: 2px solid #000;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer; 
+    color: #000;
+    font-weight: bold;
+}
+
+/* Feedback visuel au survol ou par accessibilité clavier ARIA */
+.carte-pokemon:hover, .carte-pokemon:focus {
+    background-color: #61ce70; 
+    outline: 3px solid #fff; 
+}
+
+.carte-pokemon img {
+    width: 80px;
+    height: 80px;
+    display: block;
+    margin: 0 auto; 
+}
+
+/* =========================================
+   5. INTERFACES DE CONTRÔLE INFÉRIEURES
+   ========================================= */
+.partie-basse {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bouton-rond-noir {
+    width: 35px;
+    height: 35px;
+    background-color: #222;
+    border-radius: 50%;
+    border: 2px solid #000;
+}
+
+/* Panel indicateur de pagination courante */
+.ecran-vert-page {
+    background-color: #51ae5f;
+    border: 2px solid #000;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* Routage de l'Offset Pagination API */
+.boutons-pagination button {
+    background-color: #222;
+    color: #fff;
+    border: 2px solid #000;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.boutons-pagination button:disabled {
+    opacity: 0.5; 
+}
+
+/* Polygon clipping path pour architecture visuelle D-Pad Directionnelle matérielle */
+.croix-directionnelle {
+    width: 60px;
+    height: 60px;
+    background-color: #222;
+    clip-path: polygon(33% 0, 66% 0, 66% 33%, 100% 33%, 100% 66%, 66% 66%, 66% 100%, 33% 100%, 33% 66%, 0 66%, 0 33%, 33% 33%);
+}
+
+/* =========================================
+   6. FENÊTRE DIALOG (MODALE SUPERPOSÉE)
+   ========================================= */
+dialog {
+    margin: auto; 
+    padding: 20px;
+    border: 4px solid #000;
+    border-radius: 10px;
+    background-color: #dedede;
+    width: 90%;
+    max-width: 380px;
+    max-height: 85vh; 
+    overflow-y: auto; 
+    text-align: center;
+}
+
+dialog::backdrop {
+    background: rgba(0,0,0,0.8); 
+}
+
+#btn-fermer-modale {
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
+    background: red;
+    color: white;
+    border: 2px solid #000;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.modale-images {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modale-images img {
+    width: 90px;
+    height: 90px;
+    margin: 10px 0;
+    background: rgba(255,255,255,0.4);
+    border-radius: 5px;
+}
+
+.modale-infos {
+    text-align: left;
+    background: #fff;
+    padding: 15px;
+    border: 2px solid #000;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.modale-infos hr {
+    border: none;
+    border-top: 1px dashed #ccc;
+    margin: 10px 0;
+}
+
+.modale-infos ul {
+    margin-left: 20px;
+    margin-top: 5px;
+}
+
+/* =========================================
+   7. RÉSOLUTION RESPONSIVE DESIGN (NATIVE MODE MOBILE)
+   ========================================= */
+@media (max-width: 600px) {
+    /* Élimination des débords périphériques */
+    body {
+        padding: 0;
+        margin: 0;
+        background-color: #dc0a2d; 
+        overflow: hidden; 
+    }
+    
+    /* Extensibilité totale et fixité contrainte (Position: Fixed) pour compatibilité iOS Viewport */
+    .pokedex {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        border: none;
+        padding: 10px;
+        box-shadow: none;
+        display: flex; 
+        flex-direction: column; 
+    }
+    
+    /* Allocation dynamique d'occupation et suppression des rayons excessifs matériels */
+    .contour-ecran {
+        flex: 1; 
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        min-height: 0;
+    }
+    
+    /* Isolement de défilement pour séparer la recherche contextuelle et la grille list-item */
+    .ecran-interieur {
+        flex: 1;
+        display: flex; 
+        flex-direction: column;
+        min-height: 0;
+        height: auto;
+        padding: 10px;
+        overflow: hidden; 
+    }
+    
+    /* Verrouillage fixe de la zone de recherche de contrainte Y */
+    .barre-recherche {
+        flex-shrink: 0; 
+        margin-bottom: 15px; 
+    }
+
+    /* Attribution de l'Overflow principal limité à la grille visuelle */
+    #grille-pokemon {
+        flex: 1; 
+        overflow-y: auto; 
+        min-height: 0;
+        padding-right: 5px; 
+    }
+
+    /* Wrap adaptatif et gestion Safe Area Insets iOS */
+    .partie-basse {
+        flex-wrap: wrap; 
+        gap: 10px;
+        justify-content: space-between;
+        padding-bottom: env(safe-area-inset-bottom, 10px);
+    }
+    
+    .carte-pokemon img {
+        width: 60px;
+        height: 60px;
+    }
+}
